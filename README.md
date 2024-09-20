@@ -1218,7 +1218,7 @@ La destruction de données à caractère numérique par perçage du disque dur e
 
 Il est important de noter que la destruction de données par ponçage est une méthode spécialisée qui nécessite une expertise technique et réglementaire spécifique. Pour des raisons de sécurité et d'efficacité, il est souvent recommandé de faire appel à des services professionnels pour effectuer la destruction des disques durs
 
-**6.1.21 - Broyage**
+##### **6.1.21 - Broyage**
 
 La destruction de données à caractère numérique par broyage du support de stockage est une méthode physique de sécurisation des données qui vise à rendre les données stockées sur un support de stockage irrécupérables. Cette technique implique l'utilisation d'un outil mécanique pour broyer le support de stockage, transformant les données en morceaux physiques qui ne peuvent plus être utilisés pour accéder aux informations stockées. Voici une procédure hypothétique basée sur les principes généraux de la destruction de données par broyage, tirée des informations disponibles :
 
@@ -1238,6 +1238,261 @@ La destruction de données à caractère numérique par broyage du support de st
 - **Conformité réglementaire** : Pour les organisations soumettant à des réglementations spécifiques, la destruction par broyage peut aider à s'assurer la conformité en éliminant définitivement les données sensibles.
 
 Il est important de noter que la destruction de données par broyage est une méthode spécialisée qui nécessite une expertise technique et réglementaire spécifique. Pour des raisons de sécurité et d'efficacité, il est souvent recommandé de faire appel à des services professionnels pour effectuer la destruction des supports de stockage.
+
+## **7.0.0 - Description des microprogrammes internes**
+
+### **7.0.1 - Généralités**
+
+**Voici une liste des principaux types de microprogrammes internes nécessaires au démarrage d'un ordinateur :**
+
+- BIOS ou UEFI : Le système de firmware qui contrôle les périphériques de base et gère le démarrage du système.
+- Microprogramme de la carte mère : Contenu dans une puce flash sur la carte mère, il initialise le processeur et charge le premier programme.
+- POST (Power-On Self-Test) : Une série de tests automatisés effectuée par le BIOS/UEFI pour vérifier l'état du matériel.
+- Chargeur de démarrage : Programme chargé pour démarrer le système d'exploitation spécifié.
+- Gestionnaire de disque : Pour lire les informations du disque dur ou de la clé USB.
+- Pilotes matériels : Pour initialiser et configurer les composants matériels.
+- Gestionnaire de mémoire : Pour gérer l'allocation et la gestion de la RAM.
+- Gestionnaire de périphériques : Pour reconnaître et configurer les périphériques connectés.
+- Gestionnaire de réseau : Pour configurer et gérer les connexions réseau.
+- Gestionnaire de sécurité : Pour vérifier et appliquer les paramètres de sécurité comme Secure Boot.
+- Gestionnaire de temps réel : Pour gérer les tâches en mode temps réel si nécessaire.
+- Gestionnaire de configuration : Pour afficher et modifier les paramètres du BIOS/UEFI.
+- Gestionnaire d'erreurs : Pour gérer et signaler les problèmes rencontrés lors du démarrage.
+- Gestionnaire de sauvegarde : Pour restaurer des configurations précédentes si nécessaire.
+
+**Ces microprogrammes travaillent ensemble pour assurer un démarrage sécurisé et efficace du système d'exploitation. Leur séquence d'exécution dépend des spécificités du matériel et de l'architecture choisie par le fabricant.**
+
+#### **7.0.2 - BIOS**
+
+**Basic Input Output System est l'ancien système de firmware qui contrôle les périphériques de base d'un ordinateur.**
+
+- Utilise des interruptions matérielles permettant d'accéder aux fonctionnalités de base du matériel.
+- BIOS supporte principalement les systèmes d'exploitation Windows NT.
+- BIOS utilise des partitions MBR (Master Boot Record).
+- BIOS ne propose pas de fonctionnalités de sécurité native.
+- BIOS fonctionne en mode 16 bits.
+- BIOS utilise principalement le clavier pour naviguer.
+- BIOS a tendance à prendre plus de temps pour démarrer le système.
+
+Voici une description détaillée de la séquence de démarrage d'une machine en BIOS :
+
+<u>**Séquence de démarrage BIOS**</u>
+
+**Voici une description détaillée de la séquence de démarrage d'une machine embarquant un BIOS :**
+
+**1. Allumage du système**
+
+- Le système passe d'un état dormant à un état actif.
+- L'alimentation électrique est appliquée aux composants.
+- Le microprocesseur commence à fonctionner.
+
+**2. Power-On Self-Test (POST)**
+
+- Le BIOS exécute une série de tests de diagnostic appelés POST.
+- Ces tests vérifient la présence et le bon fonctionnement des composants essentiels.
+- Ils identifient tout problème matériel critique.
+
+**3. Vérification de la configuration**
+
+- Le BIOS vérifie la configuration matérielle (RAM, processeur, etc.).
+- Il reconnaît les périphériques connectés.
+
+**4. Affichage de l'écran de démarrage**
+
+- Un écran noir avec des informations du BIOS s'affiche brièvement.
+- Il montre généralement le logo du constructeur et des informations techniques.
+
+**5. Sélection de l'option de démarrage**
+
+- Le système attend que l'utilisateur presse une touche pour continuer.
+- À ce stade, l'utilisateur peut modifier la configuration du BIOS si nécessaire.
+
+**6. Vérification des périphériques**
+
+- Le BIOS vérifie les périphériques listés dans l'ordre de démarrage.
+- Il cherche un système d'exploitation sur le premier périphérique listé.
+
+**7. Chargement du Master Boot Record (MBR)**
+
+- Si un périphérique bootable est trouvé, le MBR est chargé.
+- Le MBR contient le code pour charger le système d'exploitation.
+
+**8. Chargement du système d'exploitation**
+
+- Le code du MBR charge le système d'exploitation spécifié.
+- Il peut passer des paramètres supplémentaires à l'OS.
+
+**9. Démarrage complet**
+
+- L'OS prend le contrôle du système.
+- Il initialise les services et les pilotes nécessaires.
+
+**Cette séquence décrit le processus général de démarrage d'une machine BIOS. Le système peut varier légèrement selon les fabricants et les configurations spécifiques.**
+
+#### **7.0.3 - EFI**
+
+**Extensible Firmware Interface est un standard d'interface de firmware pour les ordinateurs personnels développé par Intel en 1998.**
+
+- Fournit un environnement d'exécution indépendant du matériel, avec ses propres pilotes et applications qui s'exécutent avant le démarrage du système d'exploitation.
+- EFI utilise des interfaces de programmation appelées "protocoles" plutôt que des appels système.
+- Les applications et pilotes EFI interagissent avec le firmware en utilisant ces protocoles plutôt que des appels système traditionnels.
+- Supporte principalement les systèmes d'exploitation Windows NT.
+- Utilise des partitions MBR (Master Boot Record).
+- Limité dans son support des formats de disque.
+- Principalement utilisé par Intel.
+- Contrairement au BIOS qui utilise des interruptions logicielles, EFI utilise une approche orientée objet avec ces protocoles pour fournir ses services.
+
+**<u>Séquence de démarrage EFI</u>**
+
+**Voici une description détaillée de la séquence de démarrage d'une machine en EFI :**
+
+**1. Initialisation du système**
+
+- Le système passe d'un état dormant à un état actif.
+- L'alimentation électrique est appliquée aux composants.
+- Le microprocesseur commence à fonctionner.
+
+**2. Vérification initiale**
+
+- Le système vérifie la présence d'alimentation.
+- Il initialise la mémoire RAM.
+- Il configure les cartes PCI.
+
+**3. Lecture des variables NVRAM**
+
+- Le système lit les variables NVRAM globales.
+- Il récupère la liste d'ordre de démarrage (Boot Order List).
+- Il extrait les informations sur chaque option de démarrage.
+
+**4. Affichage de l'écran de démarrage**
+
+- Si configuré, l'écran de démarrage EFI s'affiche.
+- Il montre les options de démarrage disponibles.
+
+**5. Sélection de l'option de démarrage**
+
+- L'utilisateur sélectionne une option de démarrage.
+- Cette sélection est stockée temporairement.
+
+**6. Chargement du bootloader EFI**
+
+- Le système charge le fichier bootloader EFI spécifié dans la variable NVRAM.
+- Ce fichier est généralement situé dans le répertoire EFI.
+
+**7. Initialisation du bootloader**
+
+- Le bootloader EFI est exécuté.
+- Il vérifie les paramètres de démarrage.
+
+**8. Chargement de l'OS**
+
+- Le bootloader EFI charge le système d'exploitation spécifié.
+- Il peut passer des paramètres supplémentaires à l'OS.
+
+**9. Démarrage complet**
+
+- L'OS prend le contrôle du système.
+- Il initialise les services et les pilotes nécessaires.
+
+**Cette séquence décrit le processus général de démarrage d'une machine EFI. Le système peut varier légèrement selon les fabricants et les configurations spécifiques.**
+
+#### **7.0.4 - UEFI**
+
+**Unified Extensible Firmware Interface est une évolution d'EFI, développée plus tard pour améliorer ses fonctionnalités et sa sécurité. Il a été publié en 2009.**
+
+- Utilise des appels de fonction.
+- Plus flexible et extensible que EFI.
+- Supporte un large éventail de systèmes d'exploitation, y compris Linux et macOS.
+- Conçu pour être rétrocompatible avec le BIOS traditionnel, ce qui n'était pas le cas d'EFI.
+- Utilise des partitions GPT (GUID Partition Table).
+- Permet l'utilisation de disques SSD et HDD de manière plus efficace.
+- Utilise une partition système EFI (ESP) spécifique pour stocker les fichiers de démarrage, alors qu'EFI n'avait pas cette exigence.
+
+**<u>Séquence de démarrage UEFI</u>**
+
+**Voici une description détaillée de la séquence de démarrage d'une machine en UEFI :**
+
+**1. Initialisation du système**
+
+- Le système passe d'un état dormant à un état actif.
+- L'alimentation électrique est appliquée aux composants.
+- Le microprocesseur commence à fonctionner.
+
+**2. Vérification initiale**
+
+- Le firmware UEFI exécute une série de tests de diagnostic appelés POST (Power-On Self-Test).
+- Ces tests vérifient la présence et le bon fonctionnement des composants essentiels.
+- Ils identifient tout problème matériel critique.
+
+**3. Lecture des variables NVRAM**
+
+- Le système lit les variables NVRAM globales.
+- Il récupère la liste d'ordre de démarrage (Boot Order List).
+- Il extrait les informations sur chaque option de démarrage.
+
+**4. Affichage de l'écran de démarrage**
+
+- Un écran EFI s'affiche, montrant les options de démarrage disponibles.
+- Il peut inclure des informations sur le matériel et les périphériques.
+
+**5. Sélection de l'option de démarrage**
+
+- L'utilisateur sélectionne une option de démarrage.
+- Cette sélection est stockée temporairement.
+
+**6. Chargement du bootloader EFI**
+
+- Le système charge le fichier bootloader EFI spécifié dans la variable NVRAM.
+- Ce fichier est généralement situé dans le répertoire EFI du système de fichiers.
+
+**7. Initialisation du bootloader EFI**
+
+- Le bootloader EFI est exécuté.
+- Il vérifie les paramètres de démarrage et peut afficher une interface utilisateur graphique.
+
+**8. Chargement de l'OS**
+
+- Le bootloader EFI charge le système d'exploitation spécifié.
+- Il peut passer des paramètres supplémentaires à l'OS.
+
+**9. Démarrage complet**
+
+- L'OS prend le contrôle du système.
+- Il initialise les services et les pilotes nécessaires.
+
+Cette séquence décrit le processus général de démarrage d'une machine UEFI moderne. Le système peut varier légèrement selon les fabricants et les configurations spécifiques. UEFI offre une approche plus flexible et sécurisée que BIOS, avec une meilleure intégration avec les systèmes d'exploitation modernes.
+
+#### **7.0.5 - Stockage**
+
+**le microprogramme n'est pas obligatoirement stocké sur une puce EEPROM. Voici les principaux points à retenir :**
+
+**Histoire du stockage du BIOS :**
+
+- Avant 1990, le BIOS était stocké sur des puces ROM non programmables.
+- Depuis environ 1990, les microprogrammes sont généralement stockés sur des puces EEPROM ou flash reprogrammables.
+
+**Types de puces utilisées :**
+
+- ROM (Read Only Memory) : Non programmable, utilisée avant 1990.
+- PROM (Programmable Read Only Memory) : Programmable une seule fois.
+- EPROM (Erasable Programmable Read Only Memory) : Programmable et réprogrammable avec un rayon UV.
+- EEPROM (Electrically Erasable Programmable Read Only Memory) : Programmable électriquement.
+- Flash ROM : Type de EEPROM qui peut être facilement reprogrammé en place.
+
+**Avantages des puces modernes :**
+
+- Possibilité de mise à jour du microprogramme sans avoir besoin de changer la puce.
+- Réduction des coûts grâce à l'utilisation de technologies plus abordables que les EPROM.
+
+**Variations selon les fabricants :**
+
+- Certains fabricants peuvent utiliser différentes technologies selon leurs modèles ou préférences.
+
+**Sécurité et sauvegarde :**
+
+- Certains systèmes incluent une copie de secours du BIOS pour éviter les problèmes de corruption.
+
+**En conclusion, bien qu'EEPROM soit très couramment utilisé pour le stockage du BIOS, il n'est pas obligatoire. Le choix dépend des besoins spécifiques du fabricant et des caractéristiques techniques de chaque système.**
 
 ## **Références et sources**
 
