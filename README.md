@@ -1494,6 +1494,232 @@ Cette séquence décrit le processus général de démarrage d'une machine UEFI 
 
 **En conclusion, bien qu'EEPROM soit très couramment utilisé pour le stockage du BIOS, il n'est pas obligatoire. Le choix dépend des besoins spécifiques du fabricant et des caractéristiques techniques de chaque système.**
 
+#### **7.1.0 - Secure boot**
+
+##### **7.1.1 - Principe de base**
+
+Le Secure Boot est une fonctionnalité de sécurité développée par le consortium UEFI pour s'assurer que seuls des logiciels immuables et signés sont chargés lors du démarrage du système. Il utilise les signatures numériques pour valider l'authenticité, la provenance et l'intégrité du code qui est chargé.
+
+##### **7.1.2 - Composants clés**
+
+**Le Secure Boot repose sur plusieurs pièces et étapes principales :**
+
+1. Les bases de données DB et DBX :
+
+- La base de données DB (Allow DB) stocke les hachages et clés des chargeurs et applications EFI autorisés à être chargés par le matériel.
+
+- La base de données DBX (Disallow DB) stocke les hachages et clés révoqués, compromis ou non-trustés.
+
+2. Les bases de données de signature :
+
+- La base de données db contient la liste des signataires ou des hachages d'images UEFI autorisées.
+- La base de données dbx contient la liste des signatures révoquées.
+
+3. La base de données KEK (Key Enrollment Key) :
+
+- Contient une liste de clés publiques utilisées pour mettre à jour les autres bases de données.
+
+##### **7.1.3 - Processus de fonctionnement**
+
+1. Au démarrage du système, le firmware vérifie les signatures de chaque composant de démarrage, y compris les pilotes UEFI, les applications EFI et le système d'exploitation.
+
+2. Si les signatures sont valides, le système démarre normalement et le firmware cède le contrôle au système d'exploitation.
+
+3. Si un composant n'est pas considéré comme fiable, le firmware doit initier une récupération spécifique à l'OEM pour restaurer le firmware fiable.
+
+4. Le processus de vérification se poursuit en chaîne, avec chaque composant s'assurant que le suivant est signé et autorisé par les bases de données de signature.
+
+##### **7.1.4 - Gestion des clés et signatures**
+
+1. Les OEM peuvent créer des clés Secure Boot en suivant les instructions du fabricant du firmware.
+
+2. Les applications EFI doivent être signées avec une clé approuvée et inclure dans la base de données de signature appropriée.
+
+3. Les bases de données sont stockées dans le RAM non-volatile du firmware et peuvent être mises à jour de manière sécurisée.
+
+##### **7.1.5 - Avantages et considérations**
+
+Le Secure Boot offre plusieurs avantages en termes de sécurité :
+
+- Il empêche l'exécution de logiciels malveillants lors du démarrage.
+- Il garantit que seuls les composants autorisés par l'OEM peuvent être chargés.
+- Il protège contre certains types de rootkits.
+
+Cependant, il peut également avoir des implications sur la compatibilité avec certains systèmes ou applications qui ne sont pas signés ou n'ont pas été approuvés par l'OEM.
+
+En résumé, le Secure Boot est une couche de sécurité essentielle pour les systèmes UEFI modernes, assurant une chaîne de confiance solide depuis le démarrage jusqu'à l'exécution du système d'exploitation.
+
+##### **7.1.6 - Versions de Secure boot**
+
+###### **Version 1.0 de Secure Boot**
+
+La première version de Secure Boot, introduite avec le UEFI 2.3.1, était basée sur les spécifications UEFI 2.3.1 Errata C. Elle offrait les fonctionnalités de base suivantes :
+
+- Vérification des signatures pour le démarrage du système
+- Utilisation d'un ensemble de clés signataires (db et dbx)
+- Support pour la mise à jour sécurisée des bases de données
+
+Cette version était plus limitée en termes de fonctionnalités et de sécurité par rapport aux versions ultérieures.
+
+###### **Version 2.0 de Secure Boot**
+
+La version 2.0 de Secure Boot, introduite avec le UEFI 2.3.1 Errata C, apportait plusieurs améliorations :
+
+- Utilisation d'algorithme cryptographiques plus robustes (RSA-2048 avec SHA-256)
+- Meilleure gestion de la hiérarchie des clés
+- Mécanismes d'autorisation plus flexibles
+- Support pour un plus grand nombre d'algorithmes cryptographiques
+
+Cette version est largement considérée comme la référence actuelle et la plus sécurisée.
+
+###### **Version 3.0 de Secure Boot**
+
+Bien que moins couramment mentionnée, il existe une version 3.0 de Secure Boot qui a été introduite récemment :
+
+- Amélioration des performances par rapport aux versions précédentes
+- Nouvelles fonctionnalités de sécurité avancées
+- Optimisations pour les systèmes embarqués
+
+Il est important de noter que cette version n'est pas encore largement adoptée et ses spécifications exactes peuvent varier selon les fabricants.
+
+##### **7.1.7 - Différences principales entre les versions**
+
+1. Sécurité : Les versions ultérieures offrent un niveau de sécurité accru grâce à l'utilisation d'algorithms plus robustes et de mécanismes d'autorisation plus complexes.
+
+2. Compatibilité : TPM 2.0 est généralement compatible avec TPM 1.2, mais pas toujours au contraire.
+
+3. Performances : Les versions plus récentes offrent généralement meilleures performances en termes de calculs cryptographiques et de vérification de signatures.
+
+4. Flexibilité : Les versions plus récentes offrent plus de flexibilité dans la gestion des clés et des autorisations.
+
+5. Certifications : Certaines versions peuvent nécessiter des certifications spécifiques, comme FIPS, ce qui peut influencer le choix du type de TPM.
+
+**En résumé, bien qu'il y ait eu plusieurs versions de Secure Boot, la version 2.0 reste la référence actuelle et la plus largement supportée. La sélection de la version appropriée dépend souvent des besoins spécifiques de sécurité et de compatibilité de l'organisation ou de l'utilisateur.**
+
+#### **7.2.0 - TPM**
+
+##### **7.2.1 - Définition et principe de base**
+
+Le TPM (Trusted Platform Module) est un module cryptographique intégré dans le matériel informatique qui améliore la sécurité et la confidentialité des systèmes. Il s'agit d'une puce séparée sur la carte mère, bien que certaines implémentations récentes puissent l'intégrer au chipset du système.
+
+##### **7.2.2 - Fonctionnalités principales**
+
+Le TPM offre plusieurs fonctionnalités essentielles :
+
+1. Gestion de clés : Il permet de créer, stocker et gérer des clés cryptographiques de manière sécurisée.
+
+2. Authentification : Le TPM peut vérifier l'intégrité et l'autenticité du système d'exploitation et du microprogramme.
+
+3. Chiffrement : Il prend part à la protection des données par le biais du chiffrement et du déchiffrement.
+
+4. Proofs : Le TPM peut prouver quels logiciels sont exécutés sur un système donné.
+
+##### **7.2.3 - Composants et architecture**
+
+Le TPM comprend généralement les éléments suivants :
+
+1. Un processeur cryptographique intégré pour effectuer des calculs cryptographiques.
+
+2. Des mémoires tampon sécurisées pour stocker temporairement des données sensibles.
+
+3. Un registre de clés pour stocker et gérer les clés cryptographiques.
+
+4. Une interface avec le système d'exploitation pour communiquer et exécuter des commandes.
+
+##### **7.2.4 - Processus de fonctionnement**
+
+1. Initialisation : Le TPM est initialisé lors du démarrage du système par le firmware ou le microprogramme.
+
+2. Vérification de l'intégrité : Le TPM vérifie l'intégrité du système d'exploitation et du microprogramme.
+
+3. Gestion des clés : Le TPM génère et gère des clés cryptographiques pour divers services de sécurité.
+
+4. Exécution de fonctions : Sur demande du système d'exploitation, le TPM peut effectuer des calculs cryptographiques, signer des données, etc.
+
+##### **7.2.5 - Intégration avec Windows**
+
+Windows utilise largement le TPM pour améliorer la sécurité de la plateforme :
+
+1. BitLocker : Le TPM aide à protéger les données en chiffrant le lecteur.
+
+2. Windows Hello : Il prend part à la création et au stockage sécurisé des clés utilisées par Windows Hello.
+
+3. Vérification de l'intégrité : Le TPM contribue à vérifier que le système d'exploitation et le microprogramme sont authentiques.
+
+##### **7.2.6 - Avantages et considérations**
+
+Les avantages du TPM incluent :
+
+- Amélioration significative de la sécurité matérielle.
+- Capacité à prouver l'intégrité du système.
+- Support pour des scénarios avancés de sécurité qui ne peuvent pas être atteints uniquement par le logiciel.
+
+Cependant, il faut noter que le TPM doit être approvisionné avant de pouvoir être utilisé pleinement pour les scénarios avancés.
+
+**En résumé, le TPM est une technologie essentielle pour la sécurité informatique moderne, offrant une racine matérielle de confiance solide et diverses fonctionnalités cryptographiques intégrées dans le matériel.**
+
+##### **7.2.7 - Versions de TPM**
+
+###### **TPM 1.0**
+
+- Première version de TPM
+- Utilise des algorithmes cryptographiques plus anciens
+- Moins de fonctionnalités que les versions ultérieures
+
+###### **TPM 1.2**
+
+- Version améliorée de TPM 1.0
+- Ajout de nouvelles fonctionnalités et algorithmes
+- Plus largement supporté que TPM 1.0
+
+###### **TPM 2.0**
+
+- Version actuelle la plus répandue
+- Meilleures performances et sécurité
+- Support pour un plus grand nombre d'algorithmes cryptographiques
+
+##### **7.2.8 - Différences techniques**
+
+- Algorithmes cryptographiques : TPM 2.0 utilise des algorithmes plus robustes et largement acceptés
+- Hierarchy de clés : TPM 2.0 offre une meilleure gestion de la hiérarchie des clés
+- Autorisation : TPM 2.0 propose des mécanismes d'autorisation plus flexibles
+- Mémoire non volatile : TPM 2.0 utilise des technologies de mémoire non volatile améliorées
+
+##### **7.2.9 - Types de TPM**
+
+1. dTPM (Discrete TPM)
+
+- Module physique séparé connecté à la carte mère
+- Offre plus de flexibilité mais nécessite un espace supplémentaire
+
+2. fTPM (Firmware TPM)
+
+- Implémenté dans le chipset du système
+- Consomme moins d'énergie et occupe moins d'espace
+
+##### **7.2.10 - Certifications**
+
+- dTPM : Souvent certifié FIPS (Federal Information Processing Standards)
+- fTPM : Peut ne pas avoir de certification FIPS, sauf mention spécifique
+
+##### **7.2.11 - Compatabilité**
+
+- TPM 2.0 est généralement compatible avec TPM 1.2, mais pas toujours au contraire
+- Certaines applications peuvent nécessiter un TPM spécifique (1.2 ou 2.0)
+
+##### **7.2.12 - Performances**
+
+- TPM 2.0 offre généralement meilleures performances que les versions antérieures
+- fTPM peut offrir des performances légèrement inférieures aux dTPM dans certains cas
+
+##### **7.2.13 - Considérations pratiques**
+
+- TPM 2.0 est recommandé pour la plupart des nouveaux systèmes
+- La compatibilité avec les anciens logiciels peut être un facteur à considérer lors du choix
+- Pour les organisations nécessitant des certifications spécifiques, dTPM peut être préférable
+
+**Il est important de noter que ces différences peuvent varier selon les fabricants et les modèles spécifiques. La sélection du type de TPM approprié dépend souvent des besoins spécifiques de sécurité et de performance de l'organisation ou de l'utilisateur.**
+
 ## **Références et sources**
 
 Les différents types de supports de stockage :
